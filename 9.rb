@@ -77,6 +77,7 @@ class Map
   end
 end
 
+
 basins = Map.new(input).points.flatten.select(&:low?).map(&:basin_points)
 
 p basins.map(&:size).sort.reverse[0...3].inject(:*)
