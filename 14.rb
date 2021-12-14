@@ -21,20 +21,26 @@ CN -> C
 # input = File.read("14.txt")
 
 template, rules = input.split("\n\n")
-template = template.chars
-rules = rules.split("\n").map { |r| r.split(" -> ") }.to_h
-
-# (1..40).each do |i|
-(1..2).each do |i|
-  new_template = template.each_cons(2).flat_map do |pair|
-    [pair.first, rules[pair.join]]
-  end + [template.last]
-  rules[template.join] = new_template.join
-
-  template = new_template
-  p [i, template.size, rules.size]
-
-  pp rules
+rules = rules.split("\n").map { |r| r.split(" -> ") }.to_h do |k, v|
+  [k, [k.chars.first, v, k.chars.last].join]
 end
-min, max = template.tally.to_a.map(&:last).sort.minmax
-p max - min
+
+counters = Hash.new(0)
+template.chars.each_cons(2) do |a,b|
+  counters[a + b] += 1
+end
+
+40.times do
+  counters = counters.each_with_object(Hash.new(0)) do |(k, v), hash|
+    rules[k].chars.each_cons(2).to_a.each do |pair|
+      hash[pair.join] += v
+    end
+  end
+end
+
+chars = counters.each_with_object(Hash.new(0)) do |(k, v), hash|
+  hash[k.chars.first] += v
+end
+chars[template.chars.last] += 1
+
+puts chars.values.max - chars.values.min
