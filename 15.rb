@@ -66,3 +66,13 @@ end
 
 # res = dijkstra(input)
 # pp res
+
+input = [[8]]
+new_input = []
+
+1.times do
+  input.each do |row|
+    new_input = row + new_input
+    new_input[x][y] = 0
+  end
+end
