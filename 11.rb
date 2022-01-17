@@ -12,22 +12,24 @@ input = "5483143223
 # input = File.read("11.txt")
 
 class Squad
-  attr_reader :map
+  attr_reader :grid
 
   def initialize(lines)
-    @map ||= lines.each_with_index.each_with_object({}) do |(line, y), map|
-      line.chomp.chars.map(&:to_i).each_with_index.map do |value, x|
-        map[[x,y]] = Octopus.new(x, y, value, self)
+    @grid ||= lines.each_with_index.each_with_object({}) do |(line, y), grid|
+      line.chars.map(&:to_i).each_with_index.map do |value, x|
+        grid[[x,y]] = Octopus.new(x, y, value, self)
       end
     end
   end
 
   def around(x, y)
-    [0, 1, -1].product([0, 1, -1]).filter_map { |dx, dy| map[[x + dx, y + dy]] }
+    [0, 1, -1]
+      .product([0, 1, -1])
+      .filter_map { |dx, dy| grid[[x + dx, y + dy]] }
   end
 
-  def ticked_octopi
-    map.values.each(&:step).each(&:reset)
+  def ticked_octopuses
+    grid.values.each(&:step).each(&:reset)
   end
 end
 
@@ -47,6 +49,6 @@ class Octopus < Struct.new(:x, :y, :value, :squad, :flashes)
   end
 end
 
-squad = Squad.new(input.lines)
+squad = Squad.new(input.split("\n"))
 
-puts (1..).find { squad.ticked_octopi.map(&:value).uniq.size == 1 }
+puts (1..).find { squad.ticked_octopuses.map(&:value).uniq.size == 1 }
