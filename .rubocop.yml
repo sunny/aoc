@@ -1,0 +1,14 @@
+AllCops:
+  NewCops: enable
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
