@@ -1,3 +1,5 @@
+require "active_support/core_ext/array/grouping"
+
 input = "vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
 PmmdzqPrVvPwwTWBwg
@@ -10,12 +12,11 @@ CrZsJsPPZsGzwwsLwLmpwMDw"
 positions = [nil, *"a".."z", *"A".."Z"]
 
 sum = input.split("\n").sum do |line|
-  chars = line.chars.each_slice(line.size / 2)
-  positions.index(chars.inject(:&).first)
+  positions.index(line.chars.in_groups(2).reduce(:&).first)
 end
 p sum
 
 sum = input.lines.each_slice(3).sum do |group|
-  positions.index(group.map(&:chars).inject(:&).first)
+  positions.index(group.map(&:chars).reduce(:&).first)
 end
 p sum
