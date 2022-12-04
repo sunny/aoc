@@ -25,7 +25,7 @@ def adjacent(input, x, y)
   ].compact
 
   # since its from day 11
-  out.map {|el| [el.last, el.first] }
+  out.map { |el| [el.last, el.first] }
 end
 
 def dijkstra(matrix)
@@ -42,9 +42,8 @@ def dijkstra(matrix)
     qi = q.shift
     cost = qi.first
     node = qi.last
-    if node == to
-      return cost
-    end
+    return cost if node == to
+
     checked.add(node)
     row = node.first
     col = node.last
@@ -54,25 +53,21 @@ def dijkstra(matrix)
       adj_col = a.last
       acost = matrix[adj_row][adj_col]
       ccost = cost + acost
-      min_for_a = costs.fetch(a, 9999999)
+      min_for_a = costs.fetch(a, 9_999_999)
       if ccost < min_for_a
         costs[a] = ccost
         q.push([ccost, a])
       end
     end
   end
-  9999999
+  9_999_999
 end
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-# res = dijkstra(input)
-# pp res
-
-input = [[8]]
+# input = [[8]]
 new_input = []
 
-1.times do
-  input.each do |row|
-    new_input = row + new_input
-    new_input[x][y] = 0
-  end
+input.each do |row|
+  new_input = row + new_input
+  new_input[x][y] = 0
 end

@@ -24,6 +24,7 @@ class Point
       map.point_at(x - 1, y),
     ].compact
   end
+  # rubocop:enable Metrics/AbcSize
 
   def basin?
     value < 9
@@ -76,7 +77,6 @@ class Map
     points[y][x]
   end
 end
-
 
 basins = Map.new(input).points.flatten.select(&:low?).map(&:basin_points)
 

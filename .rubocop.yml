@@ -4,11 +4,65 @@ AllCops:
 Lint/AmbiguousBlockAssociation:
   Enabled: false
 
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: false
+
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: false
+
+Lint/UnexpectedBlockArity:
+  Exclude:
+    # RuboCop bug: it throws a "inject expects at least 2 positional arguments,
+    # got 0." when using _1 and _2 as block arguments.
+    - 2021/10.rb
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false
+
+Style/CharacterLiteral:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/HashEachMethods:
+  Exclude:
+    # Incorrectly detects the `values` method as belonging to a Hash.
+    - 2021/10.rb
+    - 2021/11.rb
+
+Style/RedundantEach:
+  # Incorrectly detects the `values` method as belonging to an Array.
+  Exclude:
+    - 2021/11.rb
+
+Style/NestedTernaryOperator:
+  Enabled: false
+
+Style/NumericPredicate:
+  # Prefer `x > 0` to `x.zero?`.
   Enabled: false
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma

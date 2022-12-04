@@ -11,24 +11,30 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 # input = File.read("8.txt")
 
+# rubocop:disable Layout/SpaceAfterComma
+# rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
+# rubocop:disable Layout/ExtraSpacing
 DIGIT_BY_PLACEMENTS = {
   [0,1,2,  4,5,6] => 0,
-  [    2,    5, ] => 1,
+  [    2,    5  ] => 1,
   [0,  2,3,4,  6] => 2,
   [0,  2,3,  5,6] => 3,
-  [  1,2,3,  5, ] => 4,
+  [  1,2,3,  5  ] => 4,
   [0,1,  3,  5,6] => 5,
   [0,1,  3,4,5,6] => 6,
-  [0,  2,    5, ] => 7,
+  [0,  2,    5  ] => 7,
   [0,1,2,3,4,5,6] => 8,
   [0,1,2,3,  5,6] => 9,
-}
+}.freeze
+# rubocop:enable Layout/SpaceAfterComma
+# rubocop:enable Layout/SpaceInsideArrayLiteralBrackets
+# rubocop:enable Layout/ExtraSpacing
 
 NUMBER_BY_SIZE = {
   2 => 1,
   3 => 7,
   4 => 4,
-}
+}.freeze
 
 class Display
   attr_reader :digits, :outputs
@@ -44,19 +50,19 @@ class Display
   end
 
   def split_digits(digits)
-    digits.split(" ").map { _1.chars.sort.join }
+    digits.split.map { _1.chars.sort.join }
   end
 
   def digit_chars_by_size
     @digit_chars_by_size ||=
-      digits.map { |digit| [NUMBER_BY_SIZE[digit.size], digit.chars] }.to_h
+      digits.to_h { |digit| [NUMBER_BY_SIZE[digit.size], digit.chars] }
   end
 
   def segments_by_count
     @segments_by_count ||=
-      digits.join.chars.tally.to_a.group_by(&:last).map { |k, v|
-        [k, v.map(&:first)]
-      }.to_h
+      digits.join.chars.tally.to_a.group_by(&:last).transform_values do |v|
+        v.map(&:first)
+      end
   end
 
   def segment_code_to_placement
@@ -79,19 +85,16 @@ class Display
       seg[5] = segments_by_count[9]
       seg[6] = segments_by_count[7] - seg[3]
 
-      seg.map { |k, v| [v.first, k] }.to_h
+      seg.to_h { |k, v| [v.first, k] }
     end
   end
-
-  def num_3
-    digit_chars_by_size[7]
-  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def number_by_digit
-    @number_by_digit ||= digits.map do |digit|
+    @number_by_digit ||= digits.to_h do |digit|
       placements = digit.chars.map { |c| segment_code_to_placement[c] }
       [digit, DIGIT_BY_PLACEMENTS[placements.sort]]
-    end.to_h
+    end
   end
 end
 

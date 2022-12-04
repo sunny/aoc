@@ -21,12 +21,13 @@ CN -> C
 # input = File.read("14.txt")
 
 template, rules = input.split("\n\n")
-rules = rules.split("\n").map { |r| r.split(" -> ") }.to_h do |k, v|
-  [k, [k.chars.first, v, k.chars.last].join]
+rules = rules.split("\n").to_h do |r|
+  key, value = r.split(" -> ")
+  [key, [key.chars.first, value, key.chars.last].join]
 end
 
 counters = Hash.new(0)
-template.chars.each_cons(2) do |a,b|
+template.chars.each_cons(2) do |a, b|
   counters[a + b] += 1
 end
 

@@ -25,7 +25,7 @@ class Line
     ?[ => 2,
     ?{ => 3,
     ?< => 4,
-  }
+  }.freeze
 
   def initialize(input)
     @input = input.chomp

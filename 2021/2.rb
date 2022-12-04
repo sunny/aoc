@@ -7,7 +7,7 @@ forward 2"
 
 # input = File.read("2.txt")
 
-commands = input.lines.map { _1.split(" ") }
+commands = input.lines.map { _1.split }
 
 aim = 0
 x = 0

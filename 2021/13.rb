@@ -26,12 +26,12 @@ def fold(paper, direction, value)
   if direction == "x"
     press(
       paper.transpose[0...value].transpose,
-      paper.transpose[value + 1..-1].transpose.map(&:reverse),
+      paper.transpose[value + 1..].transpose.map(&:reverse)
     )
   else
     press(
       paper[0..value - 1],
-      paper[value + 1..-1].reverse,
+      paper[value + 1..].reverse
     )
   end
 end
@@ -50,7 +50,7 @@ end
 dots.each { |x, y| paper[y][x] = "█" }
 
 instructions.lines.each do |line|
-  direction, value = line.split(" ").last.split("=")
+  direction, value = line.split.last.split("=")
   paper = fold(paper, direction, value.to_i)
 end
 

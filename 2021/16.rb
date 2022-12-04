@@ -1,5 +1,5 @@
 def read(bits)
-  version = bits.slice!(0, 3)
+  _version = bits.slice!(0, 3)
   type = bits.slice!(0, 3).join.to_i(2)
   return read_number(bits) if type == 4
 
@@ -25,9 +25,7 @@ def read_number(bits)
 end
 
 def read_packets(bits)
-  if bits.slice!(0, 1).first == 1
-    return bits.slice!(0, 11).join.to_i(2).times.map { read(bits) }
-  end
+  return bits.slice!(0, 11).join.to_i(2).times.map { read(bits) } if bits.slice!(0, 1).first == 1
 
   packets = []
   tail = bits.slice!(0, bits.slice!(0, 15).join.to_i(2)).dup

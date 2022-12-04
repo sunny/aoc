@@ -11,11 +11,11 @@ input = "5483143223
 
 # input = File.read("11.txt")
 
-class Squad < Struct.new(:lines)
+Squad = Struct.new(:lines) do
   def grid
-    @grid ||= lines.each_with_index.each_with_object({}) do |(line, y), grid|
+    @grid ||= lines.each_with_index.with_object({}) do |(line, y), grid|
       line.chars.map(&:to_i).each_with_index.map do |value, x|
-        grid[[x,y]] = Octopus.new(x, y, value, self)
+        grid[[x, y]] = Octopus.new(x, y, value, self)
       end
     end
   end
@@ -31,15 +31,15 @@ class Squad < Struct.new(:lines)
   end
 end
 
-class Octopus < Struct.new(:x, :y, :value, :squad, :flashes)
+Octopus = Struct.new(:x, :y, :value, :squad, :flashes) do
   def step
     self.value += 1
 
-    if value == 10
-      self.flashes = flashes.to_i + 1
+    return unless value == 10
 
-      squad.around(x, y).each(&:step)
-    end
+    self.flashes = flashes.to_i + 1
+
+    squad.around(x, y).each(&:step)
   end
 
   def reset

@@ -7,7 +7,7 @@ input = "2-4,6-8
 6-6,4-6
 2-6,4-8"
 
-input = File.read("04.txt")
+# input = File.read("04.txt")
 
 total = input.lines.count do |line|
   line

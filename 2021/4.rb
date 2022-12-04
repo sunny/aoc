@@ -55,7 +55,7 @@ numbers = input.lines.first.split(",").map(&:to_i)
 boards = input.split("\n\n")[1...].map { |b| Board.new(b) }
 
 winner = nil
-numbers.each_with_index do |number, n|
+numbers.each_with_index do |number, _n|
   boards.each_with_index do |b, index|
     next if b.complete?
 
