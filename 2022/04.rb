@@ -9,11 +9,12 @@ input = "2-4,6-8
 
 # input = File.read("04.txt")
 
-total = input.lines.count do |line|
-  line
-    .split(",")
-    .map { Range.new(*_1.split("-").map(&:to_i)) }
-    .reduce(:overlaps?)
+# One-liner
+# p input.lines.count { |l| l.split(?,).map { eval(_1.sub(?-, "..")) }.reduce(:overlaps?) }
+
+# Multi-line
+ranges = input.lines.map do |line|
+  line.split(",").map { Range.new(*_1.split("-").map(&:to_i)) }
 end
 
-puts total
+puts ranges.count { _1.reduce(:overlaps?) }
