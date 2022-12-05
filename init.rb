@@ -16,7 +16,7 @@ unless input_path.exist?
   request["cookie"] = cookie_path.read.strip
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = true
-  File.write(input_path, https.request(request).read_body)
+  File.write(input_path, http.request(request).read_body)
 end
 
 unless code_path.exist?
