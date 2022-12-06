@@ -2,5 +2,5 @@ input = "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
 
 # input = File.read("06.txt")
 
-n = 14
-p n + input.chars.each_cons(n).to_a.index { _1.uniq.size == n }
+size = 14
+p size + input.chars.each_cons(size).find_index { _1.uniq.size == size }
