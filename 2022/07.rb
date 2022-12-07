@@ -28,16 +28,11 @@ $ ls
 
 sizes = Hash.new(0)
 path = Pathname.new("/")
-
 input.each_line.each do |line|
-  case line.split
-  in ["$", "cd", ".."]
-    path = path.parent
-  in ["$", "cd", name]
-    path = path.join(name)
-  in [/\d+/ => size, _]
-    path.ascend { sizes[_1.to_s] += size.to_i }
-  else
+  if line =~ /\$ cd (.+)/
+    path = path.join($1)
+  elsif line =~ /^(\d+)/
+    path.ascend { sizes[_1] += $1.to_i }
   end
 end
 
@@ -45,4 +40,5 @@ end
 p sizes.values.select { _1 <= 100_000 }.sum
 
 # Part two
-p sizes.values.sort.find { _1 >= 30_000_000 - 70_000_000 + sizes["/"] }
+size = 30_000_000 - 70_000_000 + sizes[Pathname.new("/")]
+p sizes.values.sort.find { _1 >= size }
