@@ -27,11 +27,11 @@ $ ls
 sizes = Hash.new(0)
 current_path = "/"
 
-input.split("\n").each do |line|
+input.each_line do |line|
   case line
-  when /^\$ cd \.\.$/
+  when /^\$ cd \.\.\n/
     current_path = File.dirname(current_path)
-  when /^\$ cd ([^\/]+)$/
+  when /^\$ cd ([^\/]+)\n/
     current_path = File.join(current_path, $1)
   when /^(\d+)/
     path = current_path
