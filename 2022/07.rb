@@ -28,7 +28,7 @@ $ ls
 
 sizes = Hash.new(0)
 path = Pathname.new("/")
-input.each_line.each do |line|
+input.each_line do |line|
   if line =~ /\$ cd (.+)/
     path = path.join($1)
   elsif line =~ /^(\d+)/
