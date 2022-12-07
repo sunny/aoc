@@ -1,3 +1,5 @@
+require "pathname"
+
 input = "$ cd /
 $ ls
 dir a
@@ -25,21 +27,17 @@ $ ls
 # input = File.read("07.txt")
 
 sizes = Hash.new(0)
-current_path = "/"
+path = Pathname.new("/")
 
-input.each_line do |line|
-  case line
-  when /^\$ cd \.\.\n/
-    current_path = File.dirname(current_path)
-  when /^\$ cd ([^\/]+)\n/
-    current_path = File.join(current_path, $1)
-  when /^(\d+)/
-    path = current_path
-    loop do
-      sizes[path] += $1.to_i
-      break if path == "/"
-      path = File.dirname(path)
-    end
+input.each_line.each do |line|
+  case line.split
+  in ["$", "cd", ".."]
+    path = path.parent
+  in ["$", "cd", name]
+    path = path.join(name)
+  in [/\d+/ => size, _]
+    path.ascend { sizes[_1.to_s] += size.to_i }
+  else
   end
 end
 
