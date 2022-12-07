@@ -24,35 +24,27 @@ $ ls
 
 # input = File.read("07.txt")
 
-dirs = {}
-current_dir = nil
+sizes = Hash.new(0)
+current_path = "/"
 
-input.lines.each do |line|
+input.split("\n").each do |line|
   case line
-  when /^\$ cd \/$/
-    current_dir = ""
   when /^\$ cd \.\.$/
-    current_dir = current_dir.split("/").tap(&:pop).join("/")
-  when /^\$ cd (.+)$/
-    current_dir = (current_dir.split("/") + [$1]).join("/")
-  when /^(\d+) .+$/
-    path = current_dir
-    size = $1.to_i
+    current_path = File.dirname(current_path)
+  when /^\$ cd ([^\/]+)$/
+    current_path = File.join(current_path, $1)
+  when /^(\d+)/
+    path = current_path
     loop do
-      dirs[path] ||= 0
-      dirs[path] += size.to_i
-      break if path == ""
-      path = path.gsub(/(\/|^)[^\/]+$/, "")
+      sizes[path] += $1.to_i
+      break if path == "/"
+      path = File.dirname(path)
     end
   end
 end
 
 # Part one
-p dirs.select { |k, v| v <= 100_000 }.sum(&:last)
+p sizes.values.select { _1 <= 100_000 }.sum
 
 # Part two
-space = 70_000_000
-required_space = 30_000_000
-unused = space - dirs[""]
-to_delete = required_space - unused
-p dirs.sort_by { |k, v| v }.find { |k, v| v >= to_delete }.last
+p sizes.values.sort.find { _1 >= 30_000_000 - 70_000_000 + sizes["/"] }
