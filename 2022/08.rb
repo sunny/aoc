@@ -18,19 +18,16 @@ class Tree
   end
 
   def visible?
-    sightlines.any? { |trees| trees.all? { _1.height < height } }
+    directions.any? { |trees| trees.all? { _1.height < height } }
   end
 
   def scenic_score
-    sightlines.map { seight_score(_1) }.reduce(:*)
+    directions.map { seight_score(_1) }.reduce(:*)
   end
 
   private
 
-  def sightlines
-    [left, right, top, bottom]
-  end
-
+  def directions = [left, right, top, bottom]
   def left = (0..x-1).map { grid[y][_1] }.reverse
   def right = (x+1..grid.size-1).map { grid[y][_1] }
   def top = (0..y-1).map { grid[_1][x] }.reverse
