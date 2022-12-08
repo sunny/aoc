@@ -4,52 +4,41 @@ input = "30373
 33549
 35390"
 
-# 374400
 # input = File.read("08.txt")
 
-class Tree
-  attr_reader :x, :y, :height, :grid
-
-  def initialize(height, x, y, grid)
-    @height = height
-    @x = x
-    @y = y
-    @grid = grid
-  end
-
+class Tree < Struct.new(:height, :x, :y, :grid)
   def visible?
     directions.any? { |trees| trees.all? { _1.height < height } }
   end
 
-  def scenic_score
-    directions.map { seight_score(_1) }.reduce(:*)
+  def score
+    directions.map { direction_score(_1) }.reduce(:*)
   end
 
   private
 
   def directions = [left, right, top, bottom]
-  def left = (0..x-1).map { grid[y][_1] }.reverse
-  def right = (x+1..grid.size-1).map { grid[y][_1] }
-  def top = (0..y-1).map { grid[_1][x] }.reverse
-  def bottom = (y+1..grid.size-1).map { grid[_1][x] }
+  def left = (x - 1).downto(0).map { grid[y][_1] }
+  def right = (x + 1).upto(grid.size - 1).map { grid[y][_1] }
+  def top = (y - 1).downto(0).map { grid[_1][x] }
+  def bottom = (y + 1).upto(grid.size - 1).map { grid[_1][x] }
 
-  def seight_score(trees)
+  def direction_score(trees)
     score = 0
-    trees.each do |tree|
+    trees.each do
       score += 1
-      break if tree.height >= height
+      break if _1.height >= height
     end
     score
   end
 end
 
-lines = input.split("\n")
-grid = Array.new(lines.size) { Array.new(lines.size) }
-lines.each_with_index do |line, y|
-  line.chars.each_with_index do |char, x|
-    grid[y][x] = Tree.new(char.to_i, y, x, grid)
+grid = []
+input.lines.each_with_index do |line, y|
+  grid[y] = line.strip.each_char.with_index.map do |char, x|
+    Tree.new(char.to_i, x, y, grid)
   end
 end
 
-p grid.flatten.count(&:visible?)
-p grid.flatten.map(&:scenic_score).max
+p grid.flatten.count(&:visible?) # => 21
+p grid.flatten.map(&:score).max # => 8
