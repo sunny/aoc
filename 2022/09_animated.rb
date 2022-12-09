@@ -36,17 +36,31 @@ L 25
 U 20
 "
 
-start_x = 11
-start_y = 5
-grid_end_x = 25
-grid_end_y = 20
+# Find grid dimensions
+x = y = max_x = min_x = max_y = min_y = 0
+input.each_line do |line|
+  direction, steps = line.split
+  steps.to_i.times do
+    case direction
+    when "R" then x += 1
+    when "L" then x -= 1
+    when "U" then y += 1
+    when "D" then y -= 1
+    end
 
-# input = File.read("09.txt")
-# start_x = 126
-# start_y = 75
-# grid_end_x = 167
-# grid_end_y = 540
+    max_x = x if x > max_x
+    min_x = x if x < min_x
+    max_y = y if y > max_y
+    min_y = y if y < min_y
+  end
+end
 
+start_x = -min_x
+start_y = -min_y
+grid_end_x = max_x - min_x
+grid_end_y = max_y - min_y
+
+# Animate
 rope = Rope.new(x: start_x, y: start_y, length: 9)
 cursor = TTY::Cursor
 
@@ -67,14 +81,10 @@ cursor.invisible do
       lines = grid_end_y.downto(0).map do |j|
         0.upto(grid_end_x).map do |i|
           mark = rope.tails.find { _1.x == i && _1.y == j }&.mark
-          if mark && mark == 0
-            "H"
-          elsif mark
-            mark
-          elsif start_x == i && start_y == j
-            "s"
+          if mark
+            mark == 0 ? "H" : mark
           else
-            "."
+            start_x == i && start_y == j ? "s" : "."
           end
         end
       end
