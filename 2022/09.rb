@@ -10,41 +10,41 @@ U 20"
 # input = File.read("09.txt")
 
 class Rope
-  attr_reader :x, :y, :tail, :positions
+  attr_reader :x, :y, :positions, :tail
 
-  def initialize(length:)
+  def initialize(length)
     @x = 0
     @y = 0
     @positions = [[0, 0]]
-    @tail = Rope.new(length: length - 1) if length >= 1
+    @tail = Rope.new(length - 1) if length >= 1
   end
 
-  def tails = [tail, *tail&.tails].compact
-
-  def move_by(x_distance, y_distance)
-    @x += x_distance
-    @y += y_distance
+  def move(to_x, to_y)
+    @x += to_x
+    @y += to_y
     positions << [x, y]
     return if !tail
 
     if x > tail.x + 1 || x < tail.x - 1 || y > tail.y + 1 || y < tail.y - 1
-      tail.move_by(x <=> tail.x, y <=> tail.y)
+      tail.move(x <=> tail.x, y <=> tail.y)
+    end
+  end
+
+  def tail_end = tail&.tail_end || self
+end
+
+rope = Rope.new(9)
+
+input.each_line do |line|
+  direction, steps = line.split
+  steps.to_i.times do
+    case direction
+    when "R" then rope.move(1, 0)
+    when "L" then rope.move(-1, 0)
+    when "U" then rope.move(0, 1)
+    when "D" then rope.move(0, -1)
     end
   end
 end
 
-r = Rope.new(length: 9)
-
-input.lines.each_with_index do |line, index|
-  action, direction = line.split
-  direction.to_i.times do
-    case action
-    when "R" then r.move_by(1, 0)
-    when "L" then r.move_by(-1, 0)
-    when "U" then r.move_by(0, 1)
-    when "D" then r.move_by(0, -1)
-    end
-  end
-end
-
-p r.tails.last.positions.uniq.count
+p rope.tail_end.positions.uniq.count
