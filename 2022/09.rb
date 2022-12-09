@@ -23,9 +23,8 @@ class Rope
     @x += to_x
     @y += to_y
     positions << [x, y]
-    return if !tail
 
-    if x > tail.x + 1 || x < tail.x - 1 || y > tail.y + 1 || y < tail.y - 1
+    if tail && ((x - tail.x).abs > 1 || (y - tail.y).abs > 1)
       tail.move(x <=> tail.x, y <=> tail.y)
     end
   end
