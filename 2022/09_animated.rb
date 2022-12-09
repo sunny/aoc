@@ -1,3 +1,5 @@
+require "tty-cursor"
+
 class Rope
   attr_reader :x, :y, :positions, :tail, :mark
 
@@ -34,47 +36,51 @@ L 25
 U 20
 "
 
-# input = File.read("09.txt")
-
 start_x = 11
 start_y = 5
 grid_end_x = 25
 grid_end_y = 20
+
+# input = File.read("09.txt")
+# start_x = 126
+# start_y = 75
+# grid_end_x = 167
+# grid_end_y = 540
+
 rope = Rope.new(x: start_x, y: start_y, length: 9)
+cursor = TTY::Cursor
 
-input.each_line do |line|
-  direction, steps = line.split
-  steps.to_i.times do
-    case direction
-    when "R" then rope.move(1, 0)
-    when "L" then rope.move(-1, 0)
-    when "U" then rope.move(0, 1)
-    when "D" then rope.move(0, -1)
-    end
+cursor.invisible do
+  input.each_line do |line|
+    direction, steps = line.split
+    steps.to_i.times do
+      case direction
+      when "R" then rope.move(1, 0)
+      when "L" then rope.move(-1, 0)
+      when "U" then rope.move(0, 1)
+      when "D" then rope.move(0, -1)
+      end
 
-    # Clear screen
-    print (grid_end_y + 2).times.map { "\e[2K\e[1G\e[1A" }.join
-    print "\e[2K\e[1G"
-
-    # Print grid
-    print line
-    grid_end_y.downto(0) do |j|
-      0.upto(grid_end_x) do |i|
-        mark = rope.tails.find { _1.x == i && _1.y == j }&.mark
-        if mark && mark == 0
-          print "H"
-        elsif mark
-          print mark
-        elsif start_x == i && start_y == j
-          print "s"
-        else
-          print "."
+      # Clear screen
+      print cursor.clear_lines(grid_end_y + 3)
+      print line
+      lines = grid_end_y.downto(0).map do |j|
+        0.upto(grid_end_x).map do |i|
+          mark = rope.tails.find { _1.x == i && _1.y == j }&.mark
+          if mark && mark == 0
+            "H"
+          elsif mark
+            mark
+          elsif start_x == i && start_y == j
+            "s"
+          else
+            "."
+          end
         end
       end
-      puts
+      puts lines.map { _1.join }.join("\n")
+      sleep 0.1
     end
-
-    sleep 0.1
   end
 end
 
