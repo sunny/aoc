@@ -155,7 +155,7 @@ input.lines.each do |line|
   cycles = line =~ /addx (-?\d+)/ ? 2 : 1
   cycles.times do
     cycle += 1
-    print (x-1..x+1).include?((cycle % 40) - 1) ? '█' : ' '
+    print (x-1..x+1).cover?((cycle % 40) - 1) ? '█' : ' '
     print "\n" if cycle % 40 == 0
   end
   x += $1.to_i
