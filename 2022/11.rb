@@ -28,70 +28,47 @@ Monkey 3:
 
 # input = File.read("11.txt")
 
-class Item
-  attr_reader :start
-  attr_reader :values
-
-  def initialize(value, divisibles = [])
-    @start = start
-    @values = {}
-    divisibles.each { |d| @values[d] = value }
-  end
-
-  def +(other) = values.each { |d, _| values[d] += other.to_i }
-  def *(other) = values.each { |d, v| values[d] *= other == "old" ? v : other.to_i }
-  def %(other) = (values[other] %= other)
-end
-
 class Monkey
-  attr_accessor :inspections,
-                :items,
-                :operation,
-                :value,
-                :divider,
-                :if_true_monkey,
-                :if_false_monkey
+  attr_accessor :items, :symbol, :value, :divider, :if_true, :if_false, :counter
 
-  def initialize
-    @inspections = 0
-  end
+  def initialize = @counter = 0
 
-  def inspection
+  def play_and_throw
     while (item = items.shift)
-      self.inspections += 1
-      item.send(operation, value)
-      monkey = item % divider == 0 ? if_true_monkey : if_false_monkey
-      monkey.items.push item
+      self.counter += 1
+      item = item.send(symbol, value == "old" ? item : value.to_i)
+      to_monkey_index = item % divider == 0 ? if_true : if_false
+      yield item, to_monkey_index
     end
   end
 end
 
-monkey_inputs = input.split("\n\n")
+monkeys = input.split("\n\n").map do |lines|
+  monkey = Monkey.new
+  lines.each_line do |line|
+    case line
+    when /Starting items: (.*)/
+      monkey.items = $1.split.map(&:to_i)
+    when /Operation: new = old (.) (.+)/
+      monkey.symbol = $1
+      monkey.value = $2
+    when /Test: divisible by (\d+)/
+      monkey.divider = $1.to_i
+    when /If true: throw to monkey (\d+)/
+      monkey.if_true = $1.to_i
+    when /If false: throw to monkey (\d+)/
+      monkey.if_false = $1.to_i
+    end
+  end
+  monkey
+end
 
-divisibles = input.scan(/divisible by (\d+)/).map(&:first).map(&:to_i)
-monkeys = monkey_inputs.map { Monkey.new }
-
-monkey_inputs.each_with_index do |monkey_lines, index|
-  m = monkeys[index]
-
-  monkey_lines.each_line do |line|
-    case line.strip.split(" ")
-    in ["Monkey", *] then nil
-    in ["Starting", "items:", *items]
-      m.items = items.map { Item.new(_1.to_i, divisibles) }
-    in ["Operation:", "new", "=", "old", operation, value]
-      m.operation = operation
-      m.value = value
-    in ["Test:", "divisible", "by", divider]
-      m.divider = divider.to_i
-    in ["If", "true:", "throw", "to", "monkey", if_true_monkey]
-      m.if_true_monkey = monkeys[if_true_monkey.to_i]
-    in ["If", "false:", "throw", "to", "monkey", if_false_monkey]
-      m.if_false_monkey = monkeys[if_false_monkey.to_i]
+10_000.times do
+  monkeys.each do |monkey|
+    monkey.play_and_throw do |item, to_monkey_index|
+      monkeys[to_monkey_index].items << item % monkeys.map(&:divider).reduce(:*)
     end
   end
 end
 
-10_000.times { monkeys.each(&:inspection) }
-
-p monkeys.map(&:inspections).max(2).reduce(:*)
+p monkeys.map(&:counter).max(2).reduce(:*)
