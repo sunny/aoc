@@ -20,10 +20,6 @@ class Map
     end
   end
 
-  def adjacent(x, y)
-    [self[x + 1, y], self[x, y + 1], self[x - 1, y], self[x, y - 1]].compact
-  end
-
   def [](x, y)
     return nil if y < 0 || y >= grid.size
     return nil if x < 0 || x >= grid[y].size
@@ -31,34 +27,40 @@ class Map
     grid[y][x]
   end
 
-  def paths = starts.flat_map { paths_starting_from(_1) }
+  def trails = starts.flat_map { Trail.starting_from(_1) }
   def starts = grid.flatten.select(&:start?)
-
-  # Dijkstra’s algorithm
-  def paths_starting_from(start)
-    visited = Set.new
-    paths = []
-    queue = [[start]]
-    until queue.empty?
-      path = queue.shift
-      tile = path.last
-      next if visited.include?(tile)
-
-      visited.add(tile)
-      next paths << path if tile.end?
-
-      tile.neighbors.each { queue << [*path, _1] }
-    end
-    paths
-  end
 end
 
 class Tile < Struct.new(:map, :x, :y, :value)
   def start? = value == "S" || value == "a"
   def end? = value == "E"
-  def neighbors = map.adjacent(x, y).select { _1.elevation <= elevation + 1 }
+  def edges = sides.compact.select { _1.elevation <= elevation + 1 }
+  def sides = [map[x + 1, y], map[x, y + 1], map[x - 1, y], map[x, y - 1]]
   def elevation = { "S" => "a", "E" => "z" }.fetch(value, value).ord
-  def inspect = "<#{x}*#{y} #{value} #{elevation}>"
 end
 
-p Map.new(input).paths.map(&:size).min - 1
+class Trail < Struct.new(:tiles)
+  def length = tiles.size - 1
+  def tile = tiles.last
+  def +(tile) = Trail.new([*tiles, tile])
+
+  # Dijkstra’s algorithm
+  def self.starting_from(start)
+    visited = Set.new
+    trails = []
+    queue = [Trail.new([start])]
+    until queue.empty?
+      trail = queue.shift
+      tile = trail.tile
+      next if visited.include?(tile)
+
+      visited.add(tile)
+      next trails << trail if tile.end?
+
+      tile.edges.each { queue << trail + _1 }
+    end
+    trails
+  end
+end
+
+p Map.new(input).trails.map(&:length).min
