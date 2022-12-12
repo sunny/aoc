@@ -12,8 +12,8 @@ class Map
   attr_reader :grid
 
   def initialize(input)
-    @grid = input.lines.each_with_index.map do |line, y|
-      line.chomp.chars.each_with_index.map do |char, x|
+    @grid = input.each_line.with_index.map do |line, y|
+      line.chomp.each_char.with_index.map do |char, x|
         Tile.new(self, x, y, char)
       end
     end
