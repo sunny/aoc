@@ -8,10 +8,11 @@ dir = Pathname.new(__dir__)
 input_path = dir.join(now.strftime("%Y/%d.txt"))
 code_path = dir.join(now.strftime("%Y/%d.rb"))
 cookie_path = dir.join(".aoc-cookie")
-url = now.strftime("https://adventofcode.com/%Y/day/%-d/input")
+day_url = now.strftime("https://adventofcode.com/%Y/day/%-d")
+input_url = "#{day_url}/input"
 
 unless input_path.exist?
-  uri = URI(url)
+  uri = URI(input_url)
   request = Net::HTTP::Get.new(uri)
   request["cookie"] = cookie_path.read.strip
   http = Net::HTTP.new(uri.host, uri.port)
@@ -30,3 +31,6 @@ unless code_path.exist?
     end
   CODE
 end
+
+system "code", code_path.to_s
+system "open", day_url
