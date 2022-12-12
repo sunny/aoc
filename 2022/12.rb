@@ -41,7 +41,6 @@ class Trail < Struct.new(:tiles)
   def tile = tiles.last
   def +(tile) = Trail.new([*tiles, tile])
 
-  # Dijkstra’s algorithm
   def self.starting_from(start)
     visited = Set.new
     trails = []
