@@ -4,12 +4,15 @@ require "net/http"
 require "pathname"
 
 now = Time.now
-dir = Pathname.new(__dir__)
-input_path = dir.join(now.strftime("%Y/%d.txt"))
-code_path = dir.join(now.strftime("%Y/%d.rb"))
-cookie_path = dir.join(".aoc-cookie")
+root = Pathname.new(__dir__)
+dir = root.join(now.strftime("%Y/%d"))
+code_path = dir.join(now.strftime("%d.rb"))
+input_path = dir.join(now.strftime("%d.txt"))
+cookie_path = root.join(".aoc-cookie")
 day_url = now.strftime("https://adventofcode.com/%Y/day/%-d")
 input_url = "#{day_url}/input"
+
+Dir.mkdir(dir) unless dir.exist?
 
 unless input_path.exist?
   uri = URI(input_url)
@@ -32,5 +35,7 @@ unless code_path.exist?
   CODE
 end
 
-system "code", code_path.to_s
-system "open", day_url
+# system "code", dir.to_s
+# system "open", day_url
+
+puts "cd #{dir}"
