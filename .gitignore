@@ -1,3 +1,4 @@
 *.txt
 .aoc-cookie
-*/*/target/*
+*/**/target/*
+*/**/.rspec_status
