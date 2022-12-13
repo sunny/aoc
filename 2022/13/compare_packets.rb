@@ -1,14 +1,12 @@
 def compare_packets(left, right)
-  return -1 if left.nil?
-  return 1 if right.nil?
-  return left <=> right if left.is_a?(Integer) && right.is_a?(Integer)
-
-  left = Array(left)
-  right = Array(right)
-  left.zip(right).each do
-    result = compare_packets(_1, _2)
-    return result unless result == 0
+  case [left, right]
+  in [nil, _] then -1
+  in [_, nil] then 1
+  in [Integer, Integer] then left <=> right
+  in [Array, Integer] then compare_packets(left, [right])
+  in [Integer, Array] then compare_packets([left], right)
+  else
+    left.zip(right).lazy.map { compare_packets(_1, _2) }.find { _1 != 0 } ||
+      left.size <=> right.size
   end
-
-  left.size <=> right.size
 end
