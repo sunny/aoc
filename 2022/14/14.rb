@@ -4,31 +4,24 @@ input = "498,4 -> 498,6 -> 496,6
 # input = File.read("14.txt")
 
 class Cave
-  attr_reader :grid, :units_of_sand, :filled
+  attr_reader :grid
 
   def initialize
     @grid = Hash.new { |h, x| h[x] = Hash.new { |l, y| l[y] = nil } }
-    @units_of_sand = 0
-    @filled = false
   end
 
-  def max_y = @max_y ||= grid.values.flat_map(&:keys).max + 2
-
-  def [](x, y) = y >= max_y ? "#" : grid[x][y]
+  def fill = drop_sand(500, 0) until @full
 
   def []=(x, y, value)
     grid[x][y] = value
   end
 
-  def fill
-    until filled
-      drop_sand(500, 0)
-      @units_of_sand += 1
-    end
-  end
+  def units_of_sand = grid.values.flat_map(&:values).count { _1 == "o" }
+
+  private
 
   def drop_sand(x, y)
-    return @filled = true if self[x, y]
+    return @full = true if self[x, y]
 
     while y += 1
       next unless self[x, y]
@@ -39,6 +32,10 @@ class Cave
       break self[x, y - 1] = "o"
     end
   end
+
+  def max_y = @max_y ||= grid.values.flat_map(&:keys).max + 2
+
+  def [](x, y) = y >= max_y ? "#" : grid[x][y]
 end
 
 cave = Cave.new
