@@ -1,6 +1,6 @@
 require "multi_range"
 
-class Scanner < Struct.new(:sensors)
+Scanner = Struct.new(:sensors) do
   def y_max = 4_000_000
 
   def tuning_frequency
@@ -12,7 +12,7 @@ class Scanner < Struct.new(:sensors)
   end
 end
 
-class Sensor < Struct.new(:x, :y, :beacon_x, :beacon_y)
+Sensor = Struct.new(:x, :y, :beacon_x, :beacon_y) do
   def range(scanned_y)
     y_dist = (y - scanned_y).abs
     (x - distance + y_dist)..(x + distance - y_dist) if distance > y_dist
