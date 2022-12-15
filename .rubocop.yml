@@ -52,6 +52,10 @@ Style/RedundantEach:
   Exclude:
     - 2021/11.rb
 
+Style/StructInheritance:
+  # Prefer the `< Struct.new` syntax.
+  Enabled: false
+
 Style/NestedTernaryOperator:
   Enabled: false
 
