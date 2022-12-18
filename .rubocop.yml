@@ -20,6 +20,13 @@ Lint/UnexpectedBlockArity:
 Metrics/AbcSize:
   Enabled: false
 
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/ClassLength:
+  Enabled: false
+
 Metrics/CyclomaticComplexity:
   Enabled: false
 
