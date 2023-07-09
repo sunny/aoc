@@ -3,13 +3,16 @@
 require "net/http"
 require "pathname"
 
-now = Time.now
+day = ARGV[0]&.to_i || Time.now.day
+year = ARGV[1]&.to_i || Time.now.year
+
+day_string = day.to_s.rjust(2, "0")
 root = Pathname.new(__dir__)
-dir = root.join(now.strftime("%Y/%d"))
-code_path = dir.join(now.strftime("%d.rb"))
-input_path = dir.join(now.strftime("%d.txt"))
+dir = root.join(year.to_s).join(day_string)
+code_path = dir.join("#{day_string}.rb")
+input_path = dir.join("#{day_string}.txt")
 cookie_path = root.join(".aoc-cookie")
-day_url = now.strftime("https://adventofcode.com/%Y/day/%-d")
+day_url = "https://adventofcode.com/#{year}/day/#{day}"
 input_url = "#{day_url}/input"
 
 Dir.mkdir(dir) unless dir.exist?
