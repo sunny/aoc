@@ -1,9 +1,9 @@
 # Part 1
 
-input = "1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet"
+# input = "1abc2
+# pqr3stu8vwx
+# a1b2c3d4e5f
+# treb7uchet"
 
 input = File.read("01.txt")
 
@@ -16,13 +16,13 @@ p result
 
 # Part 2
 
-input = "two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-4nineeightseven2
-zoneight234
-7pqrstsixteen"
+# input = "two1nine
+# eightwothree
+# abcone2threexyz
+# xtwone3four
+# 4nineeightseven2
+# zoneight234
+# 7pqrstsixteen"
 
 input = File.read("01.txt")
 
